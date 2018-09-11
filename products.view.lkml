@@ -46,4 +46,16 @@ view: products {
     type: count
     drill_fields: [id, item_name, inventory_items.count]
   }
+
+  filter: dynamic_template {
+    type: string
+    suggestions: ["brand","category","department"]
+  }
+
+  dimension: dynamic_dimension {
+    sql: CASE WHEN {% condition dynamic_template %} 'brand' {% endcondition %} THEN ${brand}
+      WHEN {% condition dynamic_template %} 'category' {% endcondition %} THEN ${category}
+      WHEN {% condition dynamic_template %} 'department' {% endcondition %} THEN ${department}
+      ELSE null END ;;
+  }
 }

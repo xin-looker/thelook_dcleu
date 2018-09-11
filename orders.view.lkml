@@ -19,6 +19,7 @@ view: orders {
       year
     ]
     sql: ${TABLE}.created_at ;;
+    convert_tz: no
   }
 
   dimension: status {
