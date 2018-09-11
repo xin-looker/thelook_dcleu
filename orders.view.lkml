@@ -37,4 +37,22 @@ view: orders {
     type: count
     drill_fields: [id, users.first_name, users.last_name, users.id, order_items.count]
   }
+
+  measure: increase_last_quarter {
+    type: count
+    filters:{
+      field: created_quarter
+      value: "this quarter"
+    }
+  }
+
+  dimension: report_start {
+    type: date_time
+    sql: ${created_month} ;;
+  }
+
+  dimension: report_finish {
+    type: date_time
+    sql: ${created_month} ;;
+  }
 }
