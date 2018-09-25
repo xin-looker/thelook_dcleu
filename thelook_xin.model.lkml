@@ -76,3 +76,9 @@ explore: user_data {
 explore: users {}
 
 explore: users_nn {}
+
+explore: image {
+  from: Test_Image
+  }
+
+explore: extended_view {}

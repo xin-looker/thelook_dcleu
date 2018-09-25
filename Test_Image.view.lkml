@@ -1,4 +1,4 @@
-view: users {
+view: Test_Image {
   sql_table_name: demo_db.users ;;
 
   dimension: id {
@@ -17,19 +17,13 @@ view: users {
     sql: ${TABLE}.city ;;
   }
 
-#   measure: city {
-#     type: string
-#     sql: ${TABLE}.city ;;
-#   }
-
   dimension: country {
     type: string
     map_layer_name: countries
     sql: ${TABLE}.country ;;
   }
 
-  dimension_group: created_test {
-    alias: [like]
+  dimension_group: created {
     type: time
     timeframes: [
       raw,
@@ -51,7 +45,6 @@ view: users {
   dimension: first_name {
     type: string
     sql: ${TABLE}.first_name ;;
-    suggestable: no
   }
 
   dimension: gender {
@@ -78,29 +71,6 @@ view: users {
     type: count
     drill_fields: [detail*]
   }
-
-  parameter: dynamic_param_1 {
-    type: unquoted
-    allowed_value: {
-      label: "Male"
-      value: "m"
-    }
-
-    allowed_value: {
-      label: "Female"
-      value: "f"
-    }
-  }
-
-#   dimension: test_dimension_1 {
-#     sql:  {% if dynamic_param_1._parameter_value == 'm' %}
-#     ${created_date}
-#     {% elsif dynamic_param_1._parameter_value == 'f' %}
-#     ${created_month}
-#     {% else %}
-#     ${created_year}
-#     {% endif %};;
-#   }
 
   # ----- Sets of fields for drilling ------
   set: detail {

@@ -58,8 +58,4 @@ view: products {
       WHEN {% condition dynamic_template %} 'department' {% endcondition %} THEN ${department}
       ELSE null END ;;
   }
-
-  dimension: dynamic_field {
-    sql: ${dynamic_dimension}._value ;;
-  }
 }

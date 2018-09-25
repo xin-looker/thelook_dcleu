@@ -34,8 +34,9 @@ view: orders {
   }
 
   measure: count {
-    type: count
+    type: number
     drill_fields: [id, users.first_name, users.last_name, users.id, order_items.count]
+    sql: COALESCE(count(${user_id}),0) ;;
   }
 
   measure: increase_last_quarter {
