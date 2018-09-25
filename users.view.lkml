@@ -59,6 +59,11 @@ view: users {
     sql: ${TABLE}.gender ;;
   }
 
+  dimension: dynamic_dim {
+    type: string
+    sql: ${TABLE}.{% parameter dynamic_param_1  %} ;;
+  }
+
   dimension: last_name {
     type: string
     sql: ${TABLE}.last_name ;;
@@ -82,25 +87,20 @@ view: users {
   parameter: dynamic_param_1 {
     type: unquoted
     allowed_value: {
-      label: "Male"
-      value: "m"
+      label: "Gender"
+      value: "gender"
     }
 
     allowed_value: {
-      label: "Female"
-      value: "f"
+      label: "State"
+      value: "state"
+    }
+
+    allowed_value: {
+      label: "Country"
+      value: "country"
     }
   }
-
-#   dimension: test_dimension_1 {
-#     sql:  {% if dynamic_param_1._parameter_value == 'm' %}
-#     ${created_date}
-#     {% elsif dynamic_param_1._parameter_value == 'f' %}
-#     ${created_month}
-#     {% else %}
-#     ${created_year}
-#     {% endif %};;
-#   }
 
   # ----- Sets of fields for drilling ------
   set: detail {

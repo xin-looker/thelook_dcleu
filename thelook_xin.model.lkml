@@ -73,7 +73,12 @@ explore: user_data {
   }
 }
 
-explore: users {}
+explore: users {
+  join: dynamic_dim_dt {
+    sql_on: ${users.id}=${dynamic_dim_dt.id} ;;
+    relationship: one_to_one
+  }
+}
 
 explore: users_nn {}
 
