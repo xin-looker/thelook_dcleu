@@ -5,7 +5,7 @@ include: "*.view"
 include: "test.dashboard.lookml"
 
 datagroup: thelook_xin_default_datagroup {
-  # sql_trigger: SELECT MAX(id) FROM etl_log;;
+  sql_trigger: SELECT {{__user_attributes[name]}};;
   max_cache_age: "1 hour"
 }
 
