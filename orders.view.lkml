@@ -22,6 +22,12 @@ view: orders {
     convert_tz: no
   }
 
+  parameter: date_picker {
+    type: date
+    label: "Date Picker"
+    suggest_dimension: created_date
+  }
+
   dimension: status {
     type: string
     sql: ${TABLE}.status ;;

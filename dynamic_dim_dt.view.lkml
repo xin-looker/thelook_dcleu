@@ -1,9 +1,8 @@
 view: dynamic_dim_dt {
   derived_table: {
     sql: SELECT users.id as `id`,
-  users.{% parameter users.dynamic_param_1 %}  AS `dynamic_dim`,
   COUNT(*) AS `count_dt`
-  FROM demo_db.users  AS users
+  FROM demo_db.{% parameter users.dynamic_param_1 %}  AS users
   GROUP BY 1
   ORDER BY COUNT(*) DESC;;
   }
@@ -25,9 +24,9 @@ view: dynamic_dim_dt {
 #   }
 
   parameter: dynamic_param_2 {
-    type: string
-    suggest_dimension: dynamic_dim_dt.dynamic
-    suggest_explore: users
+    type: unquoted
+    suggest_dimension: id
+#     suggest_explore: users
   }
 
   dimension: dynamic_2 {

@@ -79,27 +79,60 @@ view: users {
     sql: ${TABLE}.zip ;;
   }
 
+  measure: firstdate {
+    type: date
+    sql: min(${created_test_date}) ;;
+  }
+
   measure: count {
     type: count
     drill_fields: [detail*]
   }
 
+#   measure: count_orders {
+#     type: number
+#     sql: ${orders.count} ;;
+#   }
+
+  parameter: field {
+    type: date
+  }
+
+  dimension: testing {
+    type:  yesno
+    sql: DATEDIFF('day', {% parameter field %}, ${created_test_date}) = 7 ;;
+  }
+
+  measure: count_test {
+    type: count
+    drill_fields: [detail*]
+    filters: {
+      field: testing
+      value: "Yes"
+    }
+  }
+
+#   parameter: dynamic_param_1 {
+#     type: unquoted
+#     allowed_value: {
+#       label: "Gender"
+#       value: "gender"
+#     }
+#
+#     allowed_value: {
+#       label: "State"
+#       value: "state"
+#     }
+#
+#     allowed_value: {
+#       label: "Country"
+#       value: "country"
+#     }
+#   }
+
   parameter: dynamic_param_1 {
     type: unquoted
-    allowed_value: {
-      label: "Gender"
-      value: "gender"
-    }
-
-    allowed_value: {
-      label: "State"
-      value: "state"
-    }
-
-    allowed_value: {
-      label: "Country"
-      value: "country"
-    }
+    suggest_dimension: state
   }
 
   # ----- Sets of fields for drilling ------
