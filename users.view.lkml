@@ -10,6 +10,7 @@ view: users {
   dimension: yesnovalue {
     type: yesno
     sql: case when ${age}>30 then yes else no end ;;
+    can_filter: no
   }
 
   dimension: age {
