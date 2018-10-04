@@ -61,7 +61,7 @@ explore: orders {
   }
 }
 
-explore: products {}
+# explore: products {}
 
 explore: schema_migrations {}
 
@@ -74,6 +74,11 @@ explore: user_data {
 }
 
 explore: users {
+  access_filter: {
+    field: yesnovalue
+    user_attribute: boolean_user_attribute
+  }
+
   join: dynamic_dim_dt {
     sql_on: ${users.id}=${dynamic_dim_dt.id} ;;
     relationship: one_to_one

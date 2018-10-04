@@ -7,6 +7,11 @@ view: users {
     sql: ${TABLE}.id ;;
   }
 
+  dimension: yesnovalue {
+    type: yesno
+    sql: case when ${age}>30 then yes else no end ;;
+  }
+
   dimension: age {
     type: number
     sql: ${TABLE}.age ;;
@@ -36,11 +41,19 @@ view: users {
       time,
       date,
       week,
+      day_of_month,
       month,
+      month_name,
       quarter,
       year
     ]
     sql: ${TABLE}.created_at ;;
+  }
+
+  dimension: days_per_month {
+    type: number
+    sql: case when ${created_test_month_name} in  ("January", "March", "May", "July", "August", "October", "December"
+    then 31 else 30 end;;
   }
 
   dimension: email {
@@ -72,6 +85,15 @@ view: users {
   dimension: state {
     type: string
     sql: ${TABLE}.state ;;
+    link: {
+      label:"New York"
+      url:"{{users.url_test._value}}"
+    }
+  }
+
+  dimension: url_test {
+    type: string
+    sql: case when ${state}="New York" then "https://dcleu.eu.looker.com/dashboards/24" end ;;
   }
 
   dimension: zip {
@@ -102,6 +124,16 @@ view: users {
     type:  yesno
     sql: DATEDIFF('day', {% parameter field %}, ${created_test_date}) = 7 ;;
   }
+
+  dimension: adam {
+    type: string
+    sql: case when ${email} like "adam%" then ${first_name} end;;
+  }
+
+#   dimension: adam {
+#     type: string
+#     sql: (SELECT ${TABLE}.first_name FROM );;
+#   }
 
   measure: count_test {
     type: count
