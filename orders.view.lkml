@@ -45,6 +45,15 @@ view: orders {
     sql: COALESCE(count(${user_id}),0) ;;
   }
 
+  measure: count_filtered {
+    type: count
+    drill_fields: [id, users.first_name, users.last_name, users.id, order_items.count]
+    filters: {
+      field: created_date
+      value: "5 days"
+    }
+  }
+
   measure: increase_last_quarter {
     type: count
     filters:{

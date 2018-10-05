@@ -1,14 +1,20 @@
-include: "base_view.view.lkml"
+include: "users.view.lkml"
 
 view: extended_view{
   sql_table_name: demo_db.users ;;
 
-  extends: [base_view]
+  extends: [users]
+
+#   dimension: country {
+#     type: string
+#     map_layer_name: countries
+#     hidden: yes
+#     sql: ${TABLE}.country ;;
+#   }
 
   dimension: country {
-    type: string
-    map_layer_name: countries
-    sql: ${TABLE}.country ;;
+
+    hidden: yes
   }
 
   dimension_group: created_test {

@@ -51,11 +51,11 @@ view: users {
     sql: ${TABLE}.created_at ;;
   }
 
-  dimension: days_per_month {
-    type: number
-    sql: case when ${created_test_month_name} in  ("January", "March", "May", "July", "August", "October", "December"
-    then 31 else 30 end;;
-  }
+#   dimension: days_per_month {
+#     type: number
+#     sql: case when ${created_test_month_name} in  ("January", "March", "May", "July", "August", "October", "December"
+#     then 31 else 30 end;;
+#   }
 
   dimension: email {
     type: string
