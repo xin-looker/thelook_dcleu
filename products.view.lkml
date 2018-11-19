@@ -17,6 +17,12 @@ view: products {
     sql: ${TABLE}.category ;;
   }
 
+  dimension: test_category {
+    type: string
+    sql: case when ${category}="Fashion Hoodies & Sweatshirts" then "Delivered to a pick-up point"
+    else ${category} end;;
+  }
+
   dimension: department {
     type: string
     sql: ${TABLE}.department ;;
@@ -45,6 +51,15 @@ view: products {
   measure: count {
     type: count
     drill_fields: [id, item_name, inventory_items.count]
+  }
+
+  measure: count_testfilter {
+    type: count
+    drill_fields: [id, item_name, inventory_items.count]
+    filters: {
+      field: test_category
+      value: "-Delivered to a pick-up point"
+    }
   }
 
   filter: dynamic_template {

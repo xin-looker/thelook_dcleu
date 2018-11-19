@@ -33,6 +33,11 @@ view: order_items {
     sql: ${TABLE}.returned_at ;;
   }
 
+  dimension: fabricated {
+    type: string
+    sql: "hello" union "it's" union "me" ;;
+  }
+
   dimension: sale_price {
     type: number
     sql: ${TABLE}.sale_price ;;
