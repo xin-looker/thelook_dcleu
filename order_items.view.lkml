@@ -7,6 +7,11 @@ view: order_items {
     sql: ${TABLE}.id ;;
   }
 
+  dimension: window_function_test {
+    type: number
+    sql: count(${id}) OVER (partition by ${order_id} ORDER BY ${order_id}) ;;
+  }
+
   dimension: inventory_item_id {
     type: number
     # hidden: yes
@@ -26,11 +31,19 @@ view: order_items {
       time,
       date,
       week,
+      week_of_year,
       month,
       quarter,
       year
     ]
     sql: ${TABLE}.returned_at ;;
+  }
+
+  dimension_group: duration_after_placing_order{
+    type: duration
+    timeframes: [date,week]
+    sql_start: ${orders.created_raw} ;;
+    sql_end: ${returned_raw} ;;
   }
 
   dimension: fabricated {

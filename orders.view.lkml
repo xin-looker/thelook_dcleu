@@ -1,5 +1,5 @@
 view: orders {
-  sql_table_name: demo_db.orders ;;
+#   sql_table_name: demo_db.orders ;;
 
   dimension: id {
     primary_key: yes
@@ -13,26 +13,18 @@ view: orders {
       raw,
       time,
       date,
+      day_of_week,
       week,
       month,
       quarter,
       year
     ]
     sql: ${TABLE}.created_at ;;
-    convert_tz: no
+    convert_tz: yes
   }
 
-  dimension_group: created_1 {
-    type: time
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
+  dimension: test_datetime {
+    type: date_time
     sql: ${TABLE}.created_at ;;
     convert_tz: no
   }
@@ -59,10 +51,22 @@ view: orders {
     sql: ${TABLE}.user_id ;;
   }
 
+#   measure: count {
+#     type: number
+#     drill_fields: [id, users.first_name, users.last_name, users.id, order_items.count]
+#     sql: COALESCE(count(${user_id}),0) ;;
+#   }
+
   measure: count {
-    type: number
+    type: count
     drill_fields: [id, users.first_name, users.last_name, users.id, order_items.count]
-    sql: COALESCE(count(${user_id}),0) ;;
+#     sql: COALESCE(count(${user_id}),0) ;;
+  }
+
+  measure: count_order_with_sum_distinct {
+    type: sum_distinct
+    sql_distinct_key: ${id} ;;
+    sql: ${user_id} ;;
   }
 
   measure: count_filtered {
@@ -111,13 +115,97 @@ view: orders {
     sql: ${created_month} ;;
   }
 
-  dimension: count1 {
-    type: number
-    sql: count(${id}) ;;
-  }
-
   dimension: report_finish {
     type: date_time
     sql: ${created_month} ;;
+  }
+
+
+  # create a dimension combines MoM, YoY and WoW
+
+  measure: count_this_month {
+    type: count
+    filters: {
+      field: created_month
+      value: "this month"
+    }
+  }
+
+  measure: count_last_month {
+    type: count
+    filters: {
+      field: created_month
+      value: "last month"
+    }
+  }
+
+  measure: count_2018 {
+    type: count
+    filters: {
+      field: created_year
+      value: "2018"
+    }
+  }
+
+  measure: count_2017 {
+    type: count
+    filters: {
+      field: created_year
+      value: "2017"
+    }
+  }
+
+  measure: count_this_week{
+    type: count
+    filters: {
+      field: created_week
+      value: "this week"
+    }
+  }
+
+  measure: count_last_week {
+    type: count
+    filters: {
+      field: created_week
+      value: "last week"
+    }
+  }
+
+  measure: yoy_delta {
+    type: number
+    sql: (${count_2018}-${count_2017})/${count_2017} ;;
+    value_format_name: percent_2
+  }
+
+  measure: mom_delta {
+    type: number
+    sql: (${count_this_month}-${count_last_month})/${count_last_month} ;;
+    value_format_name: percent_2
+  }
+
+  measure: wow_delta {
+    type: number
+    sql: (${count_this_week}-${count_last_week})/${count_last_week} ;;
+    value_format_name: percent_2
+  }
+
+   #transpose measure for yoy, mom and wow
+  dimension: delta {
+    case: {
+      when: {
+        label: "yoy"
+        sql: 1=1 ;;
+      }
+
+      when: {
+        label: "mom"
+        sql: 1=1 ;;
+      }
+
+      when: {
+        label: "wow"
+        sql: 1=1 ;;
+      }
+    }
   }
 }

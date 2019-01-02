@@ -62,6 +62,11 @@ view: products {
     }
   }
 
+  measure: average_price {
+    type: average
+    sql: ${TABLE}.retail_price ;;
+  }
+
   filter: dynamic_template {
     type: string
     suggestions: ["brand","category","department"]

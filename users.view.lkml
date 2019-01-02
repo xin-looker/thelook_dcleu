@@ -3,7 +3,7 @@ view: users {
 
   dimension: id {
     primary_key: yes
-    type: number
+    type: string
     sql: ${TABLE}.id ;;
   }
 
@@ -17,10 +17,15 @@ view: users {
 
   dimension: age {
     # label: "{% if _user_attributes['language'] == 'zh_CN' %} 年龄 {% else %} age {% endif %}"
-    required_access_grants: [test_access_grant]
     label: "age"
     type: number
     sql: ${TABLE}.age ;;
+  }
+
+  measure: average_age {
+    label: "average_age"
+    type: average
+    sql: ${age} ;;
   }
 
   dimension: city {
@@ -57,6 +62,7 @@ view: users {
       date,
       day_of_week,
       week,
+      week_of_year,
       day_of_month,
       month,
       month_name,
@@ -65,10 +71,9 @@ view: users {
       year
     ]
     sql: ${TABLE}.created_at ;;
-    suggest_dimension: created_test_date
-    sql_start: 2018-01-01 ;;
-    sql_end: 2018-10-01 ;;
   }
+
+
 
 #   dimension: days_per_month {
 #     type: number
@@ -88,7 +93,11 @@ view: users {
   }
 
   dimension: gender {
-    label: "user gender"
+    type: string
+    sql: ${TABLE}.gender ;;
+  }
+
+  dimension: gender1 {
     type: string
     sql: ${TABLE}.gender ;;
   }
@@ -104,7 +113,28 @@ view: users {
         label: "f"
         sql: ${gender}="f";;
       }
-      else: " "
+    }
+  }
+
+  dimension: gender_customise_dup {
+    type: string
+    case: {
+      when: {
+        label: "Category one - 5th and 95th percentile"
+        sql: ${gender}="m";;
+      }
+      when: {
+        label: "Category one - 45th percentile"
+        sql: ${gender}="m";;
+      }
+      when: {
+        label: "Category two - 5th and 95th percentile"
+        sql: ${gender}="f" ;;
+      }
+      when: {
+        label: "Category two - 45th percentile"
+        sql: ${gender}="f";;
+      }
     }
   }
 
@@ -143,10 +173,49 @@ view: users {
 #     }
   }
 
-  dimension: url_test {
+  parameter: currency_based_on_state {
+    suggest_dimension: state
+  }
+
+  parameter: currency {
+    type: unquoted
+    allowed_value: {
+      label: "dollar"
+      value: "dollar"
+    }
+    allowed_value: {
+      label: "euro"
+      value: "euro"
+    }
+    allowed_value: {
+      label: "pound"
+      value: "pound"
+    }
+  }
+
+  measure: dollor {
+    type: count
+    value_format: "$0"
+  }
+
+  measure: pound {
+    type: count
+    value_format: "£0"
+  }
+
+  measure: euro {
+    type: count
+    value_format: "€0"
+  }
+
+  measure: local_currency {
+    type: number
+    sql: ${euro};;
+  }
+
+  dimension: full_name {
     type: string
-    sql: concat(${first_name}, ${last_name});;
-    html: <p>{{users.state}}</p> ;;
+    sql: concat(${first_name},' ', ${last_name});;
   }
 
   dimension: zip {
@@ -190,16 +259,6 @@ view: users {
     }
   }
 
-#   dimension: testing {
-#     type:  yesno
-#     sql: DATEDIFF('day', {% parameter field %}, ${created_test_date}) = 7 ;;
-#   }
-
-  dimension: adam {
-    type: string
-    sql: case when ${email} like "adam%" then ${first_name} end;;
-  }
-
 #   dimension: adam {
 #     type: string
 #     sql: (SELECT ${TABLE}.first_name FROM );;
@@ -239,30 +298,21 @@ view: users {
       value: "country"
     }
   }
-
-  parameter: dynamic_param_2 {
-    type: unquoted
-    allowed_value: {
-      label: "gender"
-      value: "gender"
-    }
-
-    allowed_value: {
-      label: "state"
-      value: "state"
-    }
-  }
-
-#   dimension: is_male {
 #
+#   measure: count_param {
+#     type: count_distinct
+#     sql: case when {% parameter dynamic_param_2 %}='m' then ${gender}
+#     when {% parameter dynamic_param_2 %}='f' then ${state}
+#     else null end;;
 #   }
 
-  measure: count_param {
-    type: count_distinct
-    sql: case when {% parameter dynamic_param_2 %}='m' then ${gender}
-    when {% parameter dynamic_param_2 %}='f' then ${state}
-    else null end;;
+  measure: running_total {
+    type: running_total
+    sql: ${count} ;;
+    direction: "column"
   }
+
+
 
   measure: count_multiple_filtervalue{
     type: count
@@ -337,12 +387,40 @@ view: users {
 
   dimension: test_dynamic2 {
      type: yesno
-    sql: {% if test_frame_param2._parameter_value== 'month_td' %}
+    sql: {% if test_frame_param2._parameter_value == 'month_td' %}
     ${month_td}
-    {% elsif test_frame_param2._parameter_value== 'week_td' %}
+    {% elsif test_frame_param2._parameter_value == 'week_td' %}
     ${week_td}
     {% endif %};;
   }
+
+#   parameter: state_param {
+#     type: unquoted
+#     suggest_dimension: state
+#   }
+
+  filter: state_param {
+    type: string
+    suggest_dimension: state
+  }
+
+  dimension: yesno_state {
+    type: yesno
+    sql: {% condition state_param %}{state}{% endcondition %} ;;
+  }
+
+#   measure: user_per_state {
+#     type: number
+#     sql: case when orders.state = {% parameter state_param %} then ${count} else null end ;;
+#   }
+
+measure: user_per_state {
+  type: count
+  filters: {
+    field: yesno_state
+    value: "yes"
+  }
+}
 
 #   measure: test_dynamic {
 #     type: number
