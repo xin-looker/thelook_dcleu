@@ -13,8 +13,6 @@ view: users {
 #     can_filter: no
 #   }
 
-
-
   dimension: age {
     # label: "{% if _user_attributes['language'] == 'zh_CN' %} 年龄 {% else %} age {% endif %}"
     label: "age"
@@ -399,49 +397,28 @@ view: users {
 #     suggest_dimension: state
 #   }
 
-  filter: state_param {
-    type: string
-    suggest_dimension: state
-  }
-
-  dimension: yesno_state {
-    type: yesno
-    sql: {% condition state_param %}{state}{% endcondition %} ;;
-  }
+#   filter: state_param {
+#     type: string
+#     sql: ${state} ;;
+#   }
+#
+#   dimension: yesno_state {
+#     type: yesno
+#     sql: {% condition state_param %}${state}{% endcondition %};;
+#   }
 
 #   measure: user_per_state {
 #     type: number
 #     sql: case when orders.state = {% parameter state_param %} then ${count} else null end ;;
 #   }
 
-measure: user_per_state {
-  type: count
-  filters: {
-    field: yesno_state
-    value: "yes"
-  }
-}
-
-#   measure: test_dynamic {
-#     type: number
-#     sql: {% if time_frame_param._parameter_value =='count_mdt'%}
-#     ${count_mtd}
-#         {% elsif time_frame_param._parameter_value =='count_wdt'%}
-#         ${count_wtd}
-#           {% endif %};;
+# measure: user_per_state {
+#   type: count
+#   filters: {
+#     field: yesno_state
+#     value: "yes"
 #   }
-
-#   filter: dynamic_temp {
-#     type: string
-#     sql: case when ${dynamic_temp}="male" then ${gender}='m'
-#     when ${dynamic_temp}="female" then ${gender}='f' end;;
-#   }
-
-
-#   parameter: dynamic_param_1 {
-#     type: unquoted
-#     suggest_dimension: state
-#   }
+# }
 
   filter: date_field {
     type: date

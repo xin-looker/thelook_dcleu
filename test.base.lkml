@@ -36,13 +36,7 @@ explore: user_pdt_with_parameter {
 }
 
 
-explore: events {
-  join: users {
-    type: left_outer
-    sql_on: ${events.user_id} = ${users.id} ;;
-    relationship: many_to_one
-  }
-}
+
 
 explore: inventory_items {
   join: products {
@@ -60,7 +54,7 @@ explore: order_items {
   }
 
   join: orders {
-    type: left_outer
+    type: inner
     sql_on: ${order_items.order_id} = ${orders.id} ;;
     relationship: many_to_one
   }
@@ -72,7 +66,7 @@ explore: order_items {
   }
 
   join: users {
-    type: left_outer
+    type: inner
     sql_on: ${orders.user_id} = ${users.id} ;;
     relationship: many_to_one
   }
@@ -105,20 +99,20 @@ explore: orders {
 #           {%endif%}
 #           ;;
 #     relationship: many_to_one
-#   }
+#  }
 
   join: users {
     type: left_outer
-    sql_on: ${orders.user_id} = ${users.id} ;;
+    sql_on: ${orders.user_id} = ${users.id} AND {% if _user_attributes['name'] != null %} users.gender='m' {% else %} 1=1 {% end %} ;;
     relationship: many_to_one
   }
+}
 
 #   join: order_items {
 #     type: left_outer
 #     sql_on: ${orders.id} = ${order_items.order_id} ;;
 #     relationship: one_to_many
 #   }
-}
 
 # explore: products {}
 
@@ -133,17 +127,17 @@ explore: user_data {
 }
 
 explore: users {
-  always_filter: {
-    filters: {
-      field: gender
-      value: "m"
-    }
-
-    filters: {
-      field: created_test_date
-      value: "7 days ago for 7 days"
-    }
-  }
+#   always_filter: {
+#     filters: {
+#       field: gender
+#       value: "m"
+#     }
+#
+#     filters: {
+#       field: created_test_date
+#       value: "7 days ago for 7 days"
+#     }
+#   }
 # sql_always_where: {{users.date_field._is_selected}} AND {{users.age._in_query}} ;;
 join: dynamic_dim_dt {
   sql_on: ${users.id}=${dynamic_dim_dt.id} ;;
@@ -172,8 +166,19 @@ explore: test_ndt_parameter {
   }
 }
 
+explore: test_inner_join_order {}
+explore: test_inner_join_2 {}
+
 explore: test_user {
   from: users
   view_label: "User"
   fields: [ALL_FIELDS*,-test_user.first_name]
+}
+
+explore: events {
+  join: users {
+    type: left_outer
+    sql_on: ${events.user_id} = ${users.id} ;;
+    relationship: many_to_one
+  }
 }

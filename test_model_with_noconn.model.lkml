@@ -21,3 +21,5 @@ explore: events1 {
     relationship: many_to_one
   }
 }
+
+explore: users {}
