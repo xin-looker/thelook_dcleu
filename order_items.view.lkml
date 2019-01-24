@@ -7,6 +7,18 @@ view: order_items {
     sql: ${TABLE}.id ;;
   }
 
+  filter: date_start {
+    type: date
+  }
+
+  filter: date_end {
+    type: date
+  }
+
+  parameter: date_param {
+    type: date
+  }
+
   dimension: window_function_test {
     type: number
     sql: count(${id}) OVER (partition by ${order_id} ORDER BY ${order_id}) ;;
