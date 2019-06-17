@@ -47,6 +47,16 @@ explore: inventory_items {
 }
 
 explore: order_items {
+#   always_filter: {
+#     filters: {
+#       field: orders.14days_range
+#       value: "yes"
+#     }
+#
+#     filters: {
+#       field: orders.range_start
+#     }
+#   }
   join: inventory_items {
     type: left_outer
     sql_on: ${order_items.inventory_item_id} = ${inventory_items.id} ;;
@@ -87,6 +97,7 @@ explore: order_items {
 }
 
 explore: orders {
+  cancel_grouping_fields: [users.id, orders.created_date]
 #   cancel_grouping_fields: [orders.count1]
 #   join: users {
 #     type: left_outer
@@ -103,7 +114,8 @@ explore: orders {
 
   join: users {
     type: left_outer
-    sql_on: ${orders.user_id} = ${users.id} AND {% if _user_attributes['name'] != null %} users.gender='m' {% else %} 1=1 {% end %} ;;
+    sql_on: ${orders.user_id} = ${users.id} ;;
+#     AND {% if _user_attributes['name'] != null %} users.gender='m' {% else %} 1=1 {% end %} ;;
     relationship: many_to_one
   }
 }
