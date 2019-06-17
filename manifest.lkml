@@ -7,7 +7,11 @@ project_name: "thelook_xin"
 #   project: "name_of_other_project"
 # }
 
-localization_settings: {
-  localization_level: permissive
-  default_locale: "zh_CN"
-}
+##########################################
+# @Xin, I have commented the below as this is crashing the LookML validator, there is a Jira bug for this!
+# -Romain :)
+# localization_settings: {
+#   localization_level: permissive
+#   default_locale: "zh_CN"
+# }
+##########################################
