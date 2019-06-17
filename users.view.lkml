@@ -5,6 +5,7 @@ view: users {
     primary_key: yes
     type: string
     sql: ${TABLE}.id ;;
+    suggest_persist_for: "0 hour"
   }
 
 #   dimension: yesnovalue {
@@ -82,6 +83,11 @@ view: users {
   dimension: email {
     type: string
     sql: ${TABLE}.email ;;
+    drill_fields: [orders.id, orders.created_at, email]
+    link: {
+      url: "{{link}},&f[users.email]={{ value }}"
+      label: "link to"
+    }
   }
 
   dimension: first_name {

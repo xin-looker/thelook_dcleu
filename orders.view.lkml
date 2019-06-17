@@ -9,6 +9,7 @@ view: orders {
 
   dimension_group: created {
     type: time
+    label: "created_test"
     timeframes: [
       raw,
       time,
@@ -20,7 +21,31 @@ view: orders {
       year
     ]
     sql: ${TABLE}.created_at ;;
-    convert_tz: yes
+    convert_tz: no
+  }
+
+  dimension: casewhentest {
+    case: {
+      when: {
+        label: "hey"
+        sql: id=1 ;;
+      }
+      when: {
+        label: "heyhey"
+        sql: id=2 ;;
+      }
+      else: ""
+    }
+  }
+
+  parameter: range_start {
+    type: date
+    required_fields: [14days_range]
+  }
+
+  filter: 14days_range {
+    type: yesno
+    sql: ${created_date}<={{range_start._parameter_value}} AND ${created_date} > date_add({{ range_start._parameter_value }}, interval -14 day) ;;
   }
 
   dimension: test_datetime {
@@ -29,11 +54,40 @@ view: orders {
     convert_tz: no
   }
 
-  parameter: date_picker {
-    type: date
-    label: "Date Picker"
-    suggest_dimension: created_date
+  dimension: user_id_render {
+    type: number
+    sql: ${TABLE}.id ;;
+#     html: <span title="This is {{users.count}}">{{rendered_value}}</span> ;;
   }
+
+  parameter: date_picker {
+    type: number
+    label: "Date Picker"
+  }
+
+  parameter: timeframe {
+    type: string
+    allowed_value: {
+      label: "week"
+      value: "created_week"
+    }
+
+    allowed_value: {
+      label: "year"
+      value: "created_year"
+    }
+  }
+
+  dimension: test_slice {
+    type: string
+    sql: {% assign frame=timeframe._parameter_value | slice:0,4 %} "{{frame}}" ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: "hello" ;;
+  }
+
 
   filter: date_picker_template {
     type: date

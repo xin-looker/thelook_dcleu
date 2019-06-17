@@ -20,6 +20,17 @@ explore: events1 {
     sql_on: ${events1.user_id} = ${users.id} ;;
     relationship: many_to_one
   }
+
+  join: events2 {
+    from: events
+    type: left_outer
+    sql_on: ${events2.user_id} = ${users.id} ;;
+    relationship: many_to_one
+  }
 }
 
 explore: users {}
+
+explore: test_faceted_filter {}
+
+explore: testtop1 {}
