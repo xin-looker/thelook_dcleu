@@ -13,4 +13,9 @@ view: dates {
     primary_key: yes
     sql: ${TABLE}.series_date ;;
   }
+
+  dimension: number {
+    type: number
+    sql: 1;;
+  }
 }
