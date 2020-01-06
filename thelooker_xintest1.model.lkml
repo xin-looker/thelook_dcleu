@@ -10,3 +10,11 @@ include: "test.base"
 #   sql_trigger: SELECT count(users.email) from demo_db.users where users.email = {{ _user_attributes['name'] }};;
 #   max_cache_age: "1 hour"
 # }
+
+datagroup: test_thelook_xin {
+  sql_trigger: select curdate() ;;
+}
+
+explore: orders_1 {
+  from: orders
+}
