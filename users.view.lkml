@@ -243,7 +243,40 @@ view: users {
 
   measure: count {
     type: count
-    drill_fields: [detail*]
+    drill_fields: [created_test_year, count]
+    link: {
+      url: "{% assign vis= '{\"x_axis_gridlines\":false,
+\"y_axis_gridlines\":true,
+\"show_view_names\":false,
+\"show_y_axis_labels\":true,
+\"show_y_axis_ticks\":true,
+\"y_axis_tick_density\":\"default\",
+\"y_axis_tick_density_custom\":5,
+\"show_x_axis_label\":true,
+\"show_x_axis_ticks\":true,
+\"y_axis_scale_mode\":\"linear\",
+\"x_axis_reversed\":false,
+\"y_axis_reversed\":false,
+\"plot_size_by_field\":false,
+\"trellis\":\"\",
+\"stacking\":\"\",
+\"limit_displayed_rows\":false,
+\"legend_position\":\"center\",
+\"series_types\":{},
+\"point_style\":\"circle\",
+\"series_point_styles\":{\"users.count\":\"square\"},
+\"show_value_labels\":true,
+\"label_density\":25,
+\"x_axis_scale\":\"auto\",
+\"y_axis_combined\":true,
+\"swap_axes\":false,
+\"show_null_points\":true,
+\"interpolation\":\"linear\",
+\"type\":\"looker_line\"}' %}
+
+{{link}}&vis={{vis | encode_uri}}&total=on"
+      label: "drilling example"
+    }
   }
 
 #   measure: count_orders {

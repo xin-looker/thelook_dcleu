@@ -1,5 +1,5 @@
 
-include: "*.view.lkml"                       # include all views in this project
+include: "*.view"                       # include all views in this project
 # include: "my_dashboard.dashboard.lookml"   # include a LookML dashboard called my_dashboard
 
 persist_with: thelook_xin_default_datagroup
@@ -96,8 +96,12 @@ explore: order_items {
 }
 }
 
+explore: orders_test {
+  from: orders
+}
+
 explore: orders {
-  cancel_grouping_fields: [users.id, orders.created_date]
+  # cancel_grouping_fields: [users.id, orders.created_date]
 #   cancel_grouping_fields: [orders.count1]
 #   join: users {
 #     type: left_outer
@@ -117,6 +121,12 @@ explore: orders {
     sql_on: ${orders.user_id} = ${users.id} ;;
 #     AND {% if _user_attributes['name'] != null %} users.gender='m' {% else %} 1=1 {% end %} ;;
     relationship: many_to_one
+  }
+
+  join: orders_next_30 {
+    from: orders
+    sql_on: ${orders_next_30.created_date}>=${orders.created_date}
+  and ${orders_next_30.created_date} < date_add((${orders.created_date}), interval 30 day) ;;
   }
 }
 

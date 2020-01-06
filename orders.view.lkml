@@ -21,7 +21,12 @@ view: orders {
       year
     ]
     sql: ${TABLE}.created_at ;;
-    convert_tz: no
+#     convert_tz: no
+  }
+
+  measure: min_time {
+    type: date_time
+    sql: min(${created_time}) ;;
   }
 
   dimension: casewhentest {
@@ -132,6 +137,64 @@ view: orders {
     }
   }
 
+  measure: order_count {
+    type: count
+    drill_fields: [created_month, status, order_count]
+    link: {
+      label: "By Status"
+      url: "{% assign vis= '{\"color_application\":{\"collection_id\":\"b6347139-8179-43dd-9c1b-edf08aba97e0\",
+\"palette_id\":\"34e02186-1753-4e63-b444-7e65ac62561b\",
+\"options\":{\"steps\":5}},
+\"x_axis_gridlines\":false,
+\"y_axis_gridlines\":true,
+\"show_view_names\":false,
+\"y_axes\":[{\"label\":\"\",
+\"orientation\":\"left\",
+\"series\":[{\"axisId\":\"orders.count\",
+\"id\":\"cancelled - orders.count\",
+\"name\":\"cancelled\"},
+{\"axisId\":\"orders.count\",
+\"id\":\"complete - orders.count\",
+\"name\":\"complete\"},
+{\"axisId\":\"orders.count\",
+\"id\":\"pending - orders.count\",
+\"name\":\"pending\"}],
+\"showLabels\":true,
+\"showValues\":true,
+\"maxValue\":10000,
+\"unpinAxis\":false,
+\"tickDensity\":\"default\",
+\"tickDensityCustom\":5,
+\"type\":\"log\"}],
+\"show_y_axis_labels\":true,
+\"show_y_axis_ticks\":true,
+\"y_axis_tick_density\":\"default\",
+\"y_axis_tick_density_custom\":5,
+\"show_x_axis_label\":true,
+\"show_x_axis_ticks\":true,
+\"y_axis_scale_mode\":\"linear\",
+\"x_axis_reversed\":false,
+\"y_axis_reversed\":false,
+\"plot_size_by_field\":false,
+\"trellis\":\"pivot\",
+\"stacking\":\"\",
+\"limit_displayed_rows\":false,
+\"legend_position\":\"left\",
+\"point_style\":\"none\",
+\"series_colors\":{},
+\"show_value_labels\":false,
+\"label_density\":25,
+\"x_axis_scale\":\"auto\",
+\"y_axis_combined\":true,
+\"trend_lines\":[],
+\"show_null_points\":true,
+\"interpolation\":\"monotone\",
+\"type\":\"looker_line\"}' %}
+
+{{link}}&pivots=orders.status&vis={{vis | encode_uri}}"
+    }
+  }
+
   measure: normal_count {
     type: count
   }
@@ -207,6 +270,22 @@ view: orders {
       field: created_year
       value: "2017"
     }
+  }
+
+#   dimension: future_30_days {
+#     type: yesno
+#     sql: ${created_date}>=${created_date} and ${created_date} <= date_add(${created_date}, interval 30 day) ;;
+#   }
+
+  measure: count_future_30 {
+    type: number
+    sql: (select count(o.id) from orders as o
+    left join users on o.user_id=${users.id}
+  where
+  DATE(o.created_at)>=${created_date}
+  and DATE(o.created_at) < date_add((${created_date}), interval 30 day)
+  and {% condition users.gender %}${users.gender}{% endcondition %}
+  ) ;;
   }
 
   measure: count_this_week{
