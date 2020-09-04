@@ -18,12 +18,12 @@ explore: events {
   }
 }
 
-explore: order_extends {
-  join: orders {
-    relationship: one_to_one
-    sql_on: ${order_extends.id}=${orders.id} ;;
-  }
-}
+# explore: order_extends {
+#   join: orders {
+#     relationship: one_to_one
+#     sql_on: ${order_extends.id}=${orders.id} ;;
+#   }
+# }
 
 explore: inventory_items {
   join: products {

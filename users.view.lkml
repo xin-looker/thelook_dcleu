@@ -142,6 +142,11 @@ view: users {
     }
   }
 
+  dimension: is_m {
+    type: yesno
+    sql: ${gender}="m" ;;
+  }
+
 #   dimension: gender_html_link {
 #     type: string
 #     sql: case when ${state}="California" then '{{users.state._label}}'
@@ -463,6 +468,21 @@ view: users {
     type: date
     sql: {% if created_test_date._in_query %}
     {% endif %};;
+  }
+
+  measure: count1 {
+    label: "Count"
+    type: count
+  }
+
+  measure: count2 {
+    label: "Count"
+    type: count
+  }
+
+  measure: count3 {
+    label: "Count"
+    type: count
   }
 
   # ----- Sets of fields for drilling ------
